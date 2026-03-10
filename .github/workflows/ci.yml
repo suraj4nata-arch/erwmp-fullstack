@@ -28,3 +28,14 @@ jobs:
 
       - name: Build Docker Image
         run: docker build -t erwmp-backend ./erwmp
+
+- name: Login to DockerHub
+  uses: docker/login-action@v2
+  with:
+    username: ${{ secrets.DOCKER_USERNAME }}
+    password: ${{ secrets.DOCKER_PASSWORD }}
+
+- name: Build and Push Image
+  run: |
+    docker build -t surajr23/erwmp-backend ./erwmp
+    docker push surajr23/erwmp-backend
