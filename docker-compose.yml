@@ -1,0 +1,26 @@
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: erwmp-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: erwmp_db
+    ports:
+      - "3307:3306"
+
+  backend:
+    build: ./erwmp/erwmp
+    container_name: erwmp-backend
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mysql
+
+  frontend:
+    build: ./erwmp-ui/erwmp-ui
+    container_name: erwmp-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend

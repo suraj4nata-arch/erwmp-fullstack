@@ -1,0 +1,14 @@
+# Use OpenJDK image
+FROM eclipse-temurin:17-jdk-jammy
+
+# Set working directory inside container
+WORKDIR /erwmp
+
+# Copy jar file into container
+COPY target/*.jar erwmp.jar
+
+# Expose backend port
+EXPOSE 9000
+
+# Run application
+ENTRYPOINT ["java","-jar","erwmp.jar"]
