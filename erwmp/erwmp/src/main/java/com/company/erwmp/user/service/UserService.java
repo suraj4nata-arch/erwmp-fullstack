@@ -12,6 +12,9 @@ import com.company.erwmp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +38,10 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final JwtUtils jwtUtils;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
+    @Autowired
+    private KafkaProducer kafkaProducer;
 
+    @CacheEvict(value = "users", allEntries = true)   //Clear the "users" cache when a new user is created.
     public UserEntity createUser(CreateUserRequest request) {
 
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -55,7 +61,8 @@ public class UserService {
                 .createdAt(LocalDateTime.now())
                 .roles(Set.of(userRole))
                 .build();
-
+        kafkaProducer.sendMessage("New user created: " + user.getUsername());
+        System.out.println("Message sent to Kafka");
         return userRepository.save(user);
     }
 
@@ -68,7 +75,7 @@ public class UserService {
         user.setIsDeleted(true);
         userRepository.save(user);
     }
-
+    @Cacheable("users")
     @PreAuthorize("hasAuthority('USER_VIEW')")
     public UserResponse getUser(Long id) {
         log.info("Fetching user with id={}", id);  //log.info("User id = {}", id);
@@ -80,6 +87,7 @@ public class UserService {
                 });
 
         log.debug("User entity loaded: {}", user.getUsername());
+        System.out.println("Fetching user from DATABASE...");
         return UserMapper.toDto(user);
     }
 
@@ -93,7 +101,6 @@ public class UserService {
     public Page<UserEntity> searchUsers(String keyword, Pageable pageable) {
         return userRepository.findByUsernameContainingAndIsDeletedFalse(keyword, (org.springframework.data.domain.Pageable) pageable);
     }
-
 
     public List<UserEntity> getAllUsers() {
         return userRepository.findByIsDeletedFalse();

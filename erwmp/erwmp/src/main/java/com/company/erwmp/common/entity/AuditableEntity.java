@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-public class AuditableEntity {
+public class AuditableEntity implements Serializable {
 
     @CreatedBy
     @Column(name = "created_by", updatable = false)

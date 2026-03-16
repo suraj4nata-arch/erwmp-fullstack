@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
 
   mysql:
@@ -8,6 +10,40 @@ services:
       MYSQL_DATABASE: erwmp_db
     ports:
       - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7
+    container_name: erwmp-redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: erwmp-zookeeper
+    restart: always
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: erwmp-kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: erwmp-zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   backend:
     build: ./erwmp/erwmp
@@ -16,6 +52,8 @@ services:
       - "9000:9000"
     depends_on:
       - mysql
+      - redis
+      - kafka
 
   frontend:
     build: ./erwmp-ui/erwmp-ui
@@ -24,3 +62,6 @@ services:
       - "3000:80"
     depends_on:
       - backend
+
+volumes:
+  mysql_data:

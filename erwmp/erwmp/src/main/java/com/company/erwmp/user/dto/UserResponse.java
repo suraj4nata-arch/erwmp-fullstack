@@ -8,13 +8,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
 @Getter
-public class UserResponse {
+public class UserResponse implements Serializable {
 
     private final Long id;
     private final String username;
