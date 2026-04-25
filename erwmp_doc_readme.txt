@@ -8,11 +8,11 @@
 
 Frontend (React)
 
-&nbsp;     |
+     |
 
 Backend (Spring Boot)
 
-&nbsp;     |
+     |
 
 Database (MySQL)
 
@@ -26,7 +26,7 @@ Database (MySQL)
 
 docker-compose
 
-&nbsp;    |
+      |
 
 -----------------------------
 
@@ -64,19 +64,19 @@ Manual process = slow + mistakes.
 
 Developer pushes code
 
-&nbsp;       ↓
+      ↓
 
 Automatic build
 
-&nbsp;       ↓
+      ↓
 
 Automatic tests
 
-&nbsp;       ↓
+      ↓
 
 Docker image created
 
-&nbsp;       ↓
+      ↓
 
 Ready for deployment
 
@@ -90,27 +90,27 @@ Ready for deployment
 
 Developer pushes code
 
-&nbsp;       ↓
+        ↓
 
 GitHub Actions triggers
 
-&nbsp;       ↓
+        ↓
 
 Code checkout
 
-&nbsp;       ↓
+        ↓
 
 Build Java project
 
-&nbsp;       ↓
+        ↓
 
-Run tests
+    Run tests
 
-&nbsp;       ↓
+       ↓
 
 Build Docker image
 
-&nbsp;       ↓
+       ↓
 
 Push to Docker Hub
 
@@ -124,17 +124,17 @@ Push to Docker Hub
 
 Internet Users
 
-&nbsp;     ↓
+     ↓
 
-&nbsp;  NGINX
+   NGINX
 
-&nbsp;     ↓ 
+     ↓ 
 
 Spring Boot API
 
-&nbsp;     ↓    
+     ↓    
 
-&nbsp;   MySQL
+   MySQL
 
 
 
@@ -149,28 +149,23 @@ A cache is like a temporary storage for your data so that your application doesn
 * **Architecture becomes:**
 
 
+   Client
+ 
+     │
 
-Client
+   Backend
 
-&nbsp; │
+     │
 
-&nbsp; ▼
+┌─────────────┐
 
-Backend
+│   Redis     │
 
-&nbsp; │
+└─────────────┘
 
-&nbsp;┌─────────────┐
-
-&nbsp;│   Redis     │
-
-&nbsp;└─────────────┘
-
-&nbsp; │
-
-&nbsp; ▼
-
-Database
+     │
+ 
+  Database
 
 
 
@@ -181,27 +176,27 @@ Database
 
 Request
 
-&nbsp;  ↓
+   ↓
 
 Check Redis
 
-&nbsp;  ↓
+   ↓
 
 If cache exists → return data
 
-&nbsp;  ↓
+    ↓
 
 If not
 
-&nbsp;  ↓
+    ↓
 
 Query Database
 
-&nbsp;  ↓
+    ↓
 
 Save to Redis (10 min TTL)
 
-&nbsp;  ↓
+    ↓
 
 Return response
 
